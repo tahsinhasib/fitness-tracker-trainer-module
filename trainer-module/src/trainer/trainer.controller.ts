@@ -4,21 +4,31 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 import { Role } from '../user/user.entity';
+import { AddClientDto } from './DTO/add-client.dto';
 
 @Controller('trainer')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class TrainerController {
-  constructor(private trainerService: TrainerService) {}
+    constructor(private trainerService: TrainerService) {}
 
-  @Post('create')
-  @Roles(Role.TRAINER)
-  createTrainer(@Req() req, @Body() body: { specialization: string }) {
-    return this.trainerService.createTrainer(req.user, body.specialization);
-  }
+    // for creating a trainer specialization
+    @Post('create')
+    @Roles(Role.TRAINER)
+    createTrainer(@Req() req, @Body() body: { specialization: string }) {
+        return this.trainerService.createTrainer(req.user, body.specialization);
+    }
 
-  @Get()
-  @Roles(Role.ADMIN)
-  findAll() {
-    return this.trainerService.findAll();
-  }
+    // for getting all trainers
+    @Get()
+    @Roles(Role.ADMIN)
+    findAll() {
+        return this.trainerService.findAll();
+    }
+
+    // for adding a client to a trainer
+    @Post('/add-client')
+    @Roles(Role.TRAINER)
+    addClient(@Body() body: AddClientDto) {
+        return this.trainerService.addClient(body.trainerId, body.clientId);
+    }
 }

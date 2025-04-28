@@ -8,22 +8,33 @@ import { User } from 'src/user/user.entity';
 export class TrainerService {
     constructor(@InjectRepository(Trainer) private trainerRepository: Repository<Trainer>){}
     
-    
-    // async createTrainer(user: User, specialization: string) {
-    //     const trainer = this.trainerRepository.create({ user, specialization });
-    //     return await this.trainerRepository.save(trainer);
-    //   }
 
+    // for creating a trainer specialization
     async createTrainer(user: any, specialization: string) {
-        const trainer = this.trainerRepository.create({
-            specialization,
-            user: { id: user.userId }   
+        const trainer = this.trainerRepository.create({specialization, user: { id: user.userId }   
         });
         return await this.trainerRepository.save(trainer);
     }
     
     
-      async findAll() {
+    async findAll() {
         return await this.trainerRepository.find({ relations: ['user'] });
-      }
+    }
+
+    // for adding a client to a trainer
+    async addClient(trainerId: number, clientId: number) {
+        const trainer = await this.trainerRepository.findOne({ where: { id: trainerId } });
+        if (!trainer) {
+            throw new Error('Trainer not found');
+        }
+    
+        const client = await this.trainerRepository.manager.findOne(User, { where: { id: clientId } });
+        if (!client) {
+            throw new Error('Client not found');
+        }
+    
+        trainer.client = client;
+        return await this.trainerRepository.save(trainer);
+    }
+    
 }
