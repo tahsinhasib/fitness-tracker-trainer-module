@@ -64,10 +64,21 @@ export class TrainerService {
     // Get pending requests
     async getPendingRequests(trainerUserId: number) {
         const trainer = await this.trainerRepository.findOne({
-            where: { user: { id: trainerUserId } }, relations: ['pendingClients']
+            where: { user: { id: trainerUserId } },
+            relations: ['pendingClients'],
         });
-        return trainer?.pendingClients ?? [];
+    
+        if (!trainer) {
+            throw new NotFoundException('Trainer not found');
+        }
+    
+        // Return only id and name
+        return trainer.pendingClients.map(client => ({
+            id: client.id,
+            name: client.name,
+        }));
     }
+    
   
     // Approve client
     async approveClient(trainerUserId: number, clientId: number) {
@@ -92,9 +103,17 @@ export class TrainerService {
     // Get approved clients
     async getClients(trainerUserId: number) {
         const trainer = await this.trainerRepository.findOne({
-            where: { user: { id: trainerUserId } }, relations: ['clients']
-    });
-  
-    return trainer?.clients ?? [];
+            where: { user: { id: trainerUserId } },
+            relations: ['clients'],
+        });
+    
+        if (!trainer) {
+            throw new NotFoundException('Trainer not found');
+        }
+    
+        return trainer.clients.map(client => ({
+            id: client.id,
+            name: client.name,
+        }));
     }
 }
