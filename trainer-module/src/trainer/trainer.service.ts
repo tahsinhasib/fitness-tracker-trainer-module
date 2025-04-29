@@ -81,24 +81,39 @@ export class TrainerService {
     
   
     // Approve client
+    // Approve client
     async approveClient(trainerUserId: number, clientId: number) {
         const trainer = await this.trainerRepository.findOne({
-            where: { user: { id: trainerUserId } }, relations: ['pendingClients', 'clients']
-    });
-  
-    if (!trainer) 
-        throw new Error('Trainer not found');
-  
-    const client = trainer.pendingClients.find(c => c.id === clientId);
-    if (!client) 
-        throw new Error('Client not in pending list');
-  
-    // Remove from pending and add to clients
-    trainer.pendingClients = trainer.pendingClients.filter(c => c.id !== clientId);
-    trainer.clients.push(client);
-  
-    return await this.trainerRepository.save(trainer);
+            where: { user: { id: trainerUserId } }, 
+            relations: ['pendingClients', 'clients']
+        });
+
+        if (!trainer) 
+            throw new NotFoundException('Trainer not found');
+
+        const client = trainer.pendingClients.find(c => c.id === clientId);
+        if (!client) 
+            throw new NotFoundException(`Client with ID ${clientId} is not in the pending list`);
+
+        trainer.pendingClients = trainer.pendingClients.filter(c => c.id !== clientId);
+        trainer.clients.push(client);
+
+        return {
+            id: trainer.id,
+            specialization: trainer.specialization,
+            clients: trainer.clients.map(client => ({
+                id: client.id,
+                name: client.name,
+                email: client.email,
+            })),
+            pendingClients: trainer.pendingClients.map(client => ({
+                id: client.id,
+                name: client.name,
+                email: client.email,
+            })),
+        };
     }
+
   
     // Get approved clients
     async getClients(trainerUserId: number) {
