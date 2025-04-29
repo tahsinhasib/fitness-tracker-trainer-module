@@ -26,7 +26,7 @@ export class TrainerController {
     }
 
     // View pending requests
-    @Get('pending-requests')
+    @Get('view-requests')
     @Roles(Role.TRAINER)
     getPendingRequests(@Req() req) {
         return this.trainerService.getPendingRequests(req.user.userId);

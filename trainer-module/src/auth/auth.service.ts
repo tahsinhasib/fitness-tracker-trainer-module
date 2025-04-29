@@ -9,13 +9,34 @@ export class AuthService {
     constructor(private userService: UserService,
         private jwtService: JwtService,) {}
     
+    // async signup(name: string, email: string, password: string, role: string) {
+    //     const hashedPassword = await bcrypt.hash(password, 10);
+    //     const user = await this.userService.create({ name, email, password: hashedPassword, role: role as Role });
+    //     return {
+    //         access_token: this.jwtService.sign({ id: user.id, role: user.role }),
+    //     };
+    // }
+
     async signup(name: string, email: string, password: string, role: string) {
+        const existingUser = await this.userService.findByEmail(email);
+        if (existingUser) {
+            throw new UnauthorizedException('Email already in use');
+        }
+    
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await this.userService.create({ name, email, password: hashedPassword, role: role as Role });
+        const user = await this.userService.create({
+            name,
+            email,
+            password: hashedPassword,
+            role: role as Role,
+        });
+    
+        // Return a message instead of JWT
         return {
-            access_token: this.jwtService.sign({ id: user.id, role: user.role }),
+            message: 'Signup successful. Please log in.'
         };
     }
+    
     
     async login(email: string, password: string) {
         const user = await this.userService.findByEmail(email);
