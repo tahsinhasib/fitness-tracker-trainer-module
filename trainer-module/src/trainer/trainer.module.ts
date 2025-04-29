@@ -7,8 +7,8 @@ import { User } from 'src/user/user.entity';
 
 @Module({
     imports: [TypeOrmModule.forFeature([Trainer, User])],
-  providers: [TrainerService],
-  controllers: [TrainerController],
-  exports: [TrainerService]
+    providers: [TrainerService],
+    controllers: [TrainerController],
+    exports: [TrainerService]
 })
 export class TrainerModule {}

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
@@ -28,10 +28,15 @@ export class UserService {
       }
       
 
-    async requestTrainer(userId: number, trainerId: number) {
-        const isTrainer = await this.isTrainer(trainerId);
-        if (!isTrainer) {
-          throw new Error('Requested user is not a trainer');
+      async requestTrainer(userId: number, trainerId: number) {
+        const trainerUser = await this.userRepository.findOne({ where: { id: trainerId } });
+      
+        if (!trainerUser) {
+          throw new NotFoundException('Trainer not found');
+        }
+      
+        if (trainerUser.role !== 'trainer') {
+          throw new BadRequestException('Requested user is not a trainer');
         }
       
         let trainer = await this.trainerRepository.findOne({
@@ -48,13 +53,19 @@ export class UserService {
         }
       
         const client = await this.userRepository.findOne({ where: { id: userId } });
-      
-        if (client && !trainer.pendingClients.some(u => u.id === userId)) {
-          trainer.pendingClients.push(client);
-          await this.trainerRepository.save(trainer);
+        if (!client) {
+          throw new NotFoundException('Client not found');
         }
       
-        return { message: 'Request sent', trainer };
+        const alreadyRequested = trainer.pendingClients.some(u => u.id === userId);
+        if (alreadyRequested) {
+          throw new ConflictException('You have already sent a request to this trainer');
+        }
+      
+        trainer.pendingClients.push(client);
+        await this.trainerRepository.save(trainer);
+      
+        return { message: 'Request sent successfully', trainer };
       }
       
 }

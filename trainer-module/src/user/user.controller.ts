@@ -10,16 +10,13 @@ import { UserService } from './user.service';
 @Controller('user')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class UserController {
-  constructor(
-    private readonly usersService: UserService,
-    private readonly trainerService: TrainerService
-  ) {}
-
-
-  @Post('request-trainer')
-  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
-  @Roles(Role.USER)
-  async requestTrainer(@Req() req, @Body() body: RequestTrainerDto) {
-    return this.trainerService.requestTrainer(req.user.userId, body.trainerId);
-  }
+    constructor(private readonly usersService: UserService, 
+        private readonly trainerService: TrainerService) {}
+    
+    @Post('request-trainer')
+    @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+    @Roles(Role.USER)
+    async requestTrainer(@Req() req, @Body() body: RequestTrainerDto) {
+        return this.trainerService.requestTrainer(req.user.userId, body.trainerId);
+    }
 }

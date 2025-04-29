@@ -9,7 +9,7 @@ import { User } from './user/user.entity';
 import { Trainer } from './trainer/trainer.entity';
 
 @Module({
-  imports: [AuthModule, UserModule, TrainerModule, TypeOrmModule.forRoot({
+    imports: [AuthModule, UserModule, TrainerModule, TypeOrmModule.forRoot({
     type: 'postgres',
     host: 'localhost',
     port: 5432,

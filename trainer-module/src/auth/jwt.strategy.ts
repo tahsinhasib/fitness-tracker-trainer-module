@@ -10,20 +10,13 @@ import { jwtConstants } from './constants';
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor() {
         super({
-          jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-          ignoreExpiration: false,
-          secretOrKey: jwtConstants.secret, // secret must match signing secret
+            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+            ignoreExpiration: false,
+            secretOrKey: jwtConstants.secret, 
         });
       }
-    
-    //   async validate(payload: any) {
-    //     // This 'payload' is the decoded JWT
-    //     return { userId: payload.sub, email: payload.email, role: payload.role };
-    //   }
 
     async validate(payload: any) {
-        return { userId: payload.id, role: payload.role }; // no payload.sub, use payload.id
+        return { userId: payload.id, role: payload.role }; 
     }
-    
-    
 }
