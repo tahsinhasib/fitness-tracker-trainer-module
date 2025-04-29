@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable, OneToMany } from 'typeorm';
 import { User } from '../user/user.entity';
 
 @Entity()
@@ -12,7 +12,11 @@ export class Trainer {
   @ManyToOne(() => User)
   user: User;
 
-  @ManyToOne(() => User)
-    @JoinColumn()
-    client: User;
+  @ManyToMany(() => User)
+  @JoinTable()
+  clients: User[];
+
+  @ManyToMany(() => User)
+  @JoinTable()
+  pendingClients: User[];
 }

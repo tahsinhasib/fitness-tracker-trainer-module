@@ -25,10 +25,24 @@ export class TrainerController {
         return this.trainerService.findAll();
     }
 
-    // for adding a client to a trainer
-    @Post('/add-client')
-    @Roles(Role.TRAINER)
-    addClient(@Body() body: AddClientDto) {
-        return this.trainerService.addClient(body.trainerId, body.clientId);
-    }
+    // View pending requests
+@Get('pending-requests')
+@Roles(Role.TRAINER)
+getPendingRequests(@Req() req) {
+  return this.trainerService.getPendingRequests(req.user.userId);
+}
+
+// Approve client request
+@Post('approve-client')
+@Roles(Role.TRAINER)
+approveClient(@Req() req, @Body() body: { clientId: number }) {
+  return this.trainerService.approveClient(req.user.userId, body.clientId);
+}
+
+// View approved clients
+@Get('clients')
+@Roles(Role.TRAINER)
+getClients(@Req() req) {
+  return this.trainerService.getClients(req.user.userId);
+}
 }
