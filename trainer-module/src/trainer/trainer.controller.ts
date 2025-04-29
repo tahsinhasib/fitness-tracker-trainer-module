@@ -45,4 +45,11 @@ export class TrainerController {
     getClients(@Req() req) {
         return this.trainerService.getClients(req.user.userId);
     }
+
+    @Post('remove-client')
+    @Roles(Role.TRAINER)
+    removeClient(@Req() req, @Body() body: { clientId: number }) {
+        return this.trainerService.removeClient(req.user.userId, body.clientId);
+    }
+
 }

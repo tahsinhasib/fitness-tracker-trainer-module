@@ -71,6 +71,10 @@ export class TrainerService {
         if (!trainer) {
             throw new NotFoundException('Trainer not found');
         }
+
+        if (!trainer.pendingClients || trainer.pendingClients.length === 0) {
+            return { message: 'No pending requests' };
+        }
     
         // Return only id and name
         return trainer.pendingClients.map(client => ({
@@ -82,37 +86,42 @@ export class TrainerService {
   
     // Approve client
     // Approve client
+    
     async approveClient(trainerUserId: number, clientId: number) {
         const trainer = await this.trainerRepository.findOne({
-            where: { user: { id: trainerUserId } }, 
-            relations: ['pendingClients', 'clients']
+            where: { user: { id: trainerUserId } },
+            relations: ['pendingClients', 'clients'],
         });
-
-        if (!trainer) 
-            throw new NotFoundException('Trainer not found');
-
+    
+        if (!trainer) throw new NotFoundException('Trainer not found');
+    
         const client = trainer.pendingClients.find(c => c.id === clientId);
-        if (!client) 
+        if (!client)
             throw new NotFoundException(`Client with ID ${clientId} is not in the pending list`);
-
-        trainer.pendingClients = trainer.pendingClients.filter(c => c.id !== clientId);
+    
+        // Safely initialize the clients array
+        trainer.clients = trainer.clients ?? [];
         trainer.clients.push(client);
-
+    
+        trainer.pendingClients = trainer.pendingClients.filter(c => c.id !== clientId);
+        await this.trainerRepository.save(trainer);
+    
         return {
             id: trainer.id,
             specialization: trainer.specialization,
-            clients: trainer.clients.map(client => ({
-                id: client.id,
-                name: client.name,
-                email: client.email,
+            clients: trainer.clients.map(c => ({
+                id: c.id,
+                name: c.name,
+                email: c.email,
             })),
-            pendingClients: trainer.pendingClients.map(client => ({
-                id: client.id,
-                name: client.name,
-                email: client.email,
+            pendingClients: trainer.pendingClients.map(c => ({
+                id: c.id,
+                name: c.name,
+                email: c.email,
             })),
         };
     }
+    
 
   
     // Get approved clients
@@ -131,4 +140,35 @@ export class TrainerService {
             name: client.name,
         }));
     }
+
+
+    async removeClient(trainerUserId: number, clientId: number) {
+        const trainer = await this.trainerRepository.findOne({
+            where: { user: { id: trainerUserId } },
+            relations: ['clients'],
+        });
+    
+        if (!trainer) {
+            throw new NotFoundException('Trainer not found');
+        }
+    
+        const clientIndex = trainer.clients.findIndex(c => c.id === clientId);
+        if (clientIndex === -1) {
+            throw new NotFoundException('Client not found in trainer\'s client list');
+        }
+    
+        // Remove client from the list
+        trainer.clients.splice(clientIndex, 1);
+        await this.trainerRepository.save(trainer);
+    
+        return {
+            message: `Client with ID ${clientId} has been removed`,
+            clients: trainer.clients.map(client => ({
+                id: client.id,
+                name: client.name,
+                email: client.email,
+            })),
+        };
+    }
+    
 }
