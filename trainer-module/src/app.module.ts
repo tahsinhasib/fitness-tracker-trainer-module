@@ -7,9 +7,11 @@ import { TrainerModule } from './trainer/trainer.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/user.entity';
 import { Trainer } from './trainer/trainer.entity';
+import { WorkoutPlanModule } from './workout-plan/workout-plan.module';
+import { WorkoutPlan } from './workout-plan/workout-plan.entity';
 
 @Module({
-    imports: [AuthModule, UserModule, TrainerModule, TypeOrmModule.forRoot({
+    imports: [AuthModule, UserModule, TrainerModule, WorkoutPlanModule, TypeOrmModule.forRoot({
     type: 'postgres',
     host: 'localhost',
     port: 5432,
@@ -17,10 +19,10 @@ import { Trainer } from './trainer/trainer.entity';
     password: 'root',
     database: 'fitnesstrackerDB',
     entities: [
-        User, Trainer
+        User, Trainer, WorkoutPlan,
     ],
         synchronize: true,
-    }), ],
+    }),],
   controllers: [AppController],
   providers: [AppService],
 })

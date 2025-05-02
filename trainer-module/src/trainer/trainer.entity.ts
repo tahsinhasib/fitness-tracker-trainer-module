@@ -19,4 +19,5 @@ export class Trainer {
     @ManyToMany(() => User)
     @JoinTable()
     pendingClients: User[];
+    
 }
