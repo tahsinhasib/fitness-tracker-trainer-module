@@ -20,7 +20,7 @@ import { Trainer } from './trainer/trainer.entity';
         User, Trainer
     ],
         synchronize: true,
-    })],
+    }), ],
   controllers: [AppController],
   providers: [AppService],
 })

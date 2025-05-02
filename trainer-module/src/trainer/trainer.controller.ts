@@ -1,10 +1,11 @@
-import { Controller, Post, Get, Body, Req, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Body, Req, UseGuards, Param } from '@nestjs/common';
 import { TrainerService } from './trainer.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 import { Role } from '../user/user.entity';
 import { AddClientDto } from './DTO/add-client.dto';
+
 
 @Controller('trainer')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -51,5 +52,9 @@ export class TrainerController {
     removeClient(@Req() req, @Body() body: { clientId: number }) {
         return this.trainerService.removeClient(req.user.userId, body.clientId);
     }
+
+
+
+
 
 }
