@@ -6,8 +6,10 @@ import { User } from 'src/user/user.entity';
 
 @Injectable()
 export class TrainerService {
-    constructor(@InjectRepository(Trainer) private trainerRepository: Repository<Trainer>, 
-                @InjectRepository(User) private userRepository: Repository<User>){}
+    constructor(
+        @InjectRepository(Trainer) private trainerRepository: Repository<Trainer>, 
+        @InjectRepository(User) private userRepository: Repository<User>
+    ){}
     
 
     // for creating a trainer specialization

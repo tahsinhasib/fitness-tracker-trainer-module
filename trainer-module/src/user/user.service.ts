@@ -6,8 +6,10 @@ import { Trainer } from 'src/trainer/trainer.entity';
 
 @Injectable()
 export class UserService {
-    constructor(@InjectRepository(User) private userRepository: Repository<User>,
-    @InjectRepository(Trainer) private trainerRepository: Repository<Trainer>){}
+    constructor(
+        @InjectRepository(User) private userRepository: Repository<User>,
+        @InjectRepository(Trainer) private trainerRepository: Repository<Trainer>
+    ){}
 
     findByEmail(email: string){
         return this.userRepository.findOne({ where: { email } });

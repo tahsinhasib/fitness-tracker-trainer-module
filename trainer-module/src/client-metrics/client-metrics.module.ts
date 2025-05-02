@@ -7,7 +7,9 @@ import { User } from '../user/user.entity';
 import { Trainer } from 'src/trainer/trainer.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([ClientMetric, User, Trainer])],
+    imports: [
+        TypeOrmModule.forFeature([ClientMetric, User, Trainer])
+    ],
     providers: [ClientMetricsService],
     controllers: [ClientMetricsController],
 })

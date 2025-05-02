@@ -7,7 +7,9 @@ import { TrainerModule } from 'src/trainer/trainer.module';
 import { Trainer } from 'src/trainer/trainer.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([User, Trainer]),TrainerModule,],
+    imports: [
+        TypeOrmModule.forFeature([User, Trainer]),TrainerModule
+    ],
     providers: [UserService],
     controllers: [UserController],
     exports: [UserService],

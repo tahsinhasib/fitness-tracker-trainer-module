@@ -6,7 +6,9 @@ import { Trainer } from './trainer.entity';
 import { User } from 'src/user/user.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Trainer, User])],
+    imports: [
+        TypeOrmModule.forFeature([Trainer, User])
+    ],
     providers: [TrainerService],
     controllers: [TrainerController],
     exports: [TrainerService]

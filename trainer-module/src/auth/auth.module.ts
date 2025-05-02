@@ -9,9 +9,11 @@ import { UserService } from 'src/user/user.service';
 import { jwtConstants } from './constants';
 
 @Module({
-    imports: [PassportModule,
+    imports: [
+        PassportModule,
         JwtModule.register({secret: jwtConstants.secret, signOptions: { expiresIn: '1h' },}),
-        UserModule,],
+        UserModule
+    ],
     providers: [AuthService, JwtStrategy],
     controllers: [AuthController],
 })

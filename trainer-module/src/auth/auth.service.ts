@@ -6,8 +6,10 @@ import { Role } from '../user/user.entity';
 
 @Injectable()
 export class AuthService {
-    constructor(private userService: UserService,
-        private jwtService: JwtService,) {}
+    constructor(
+        private userService: UserService,
+        private jwtService: JwtService
+    ) {}
     
     // async signup(name: string, email: string, password: string, role: string) {
     //     const hashedPassword = await bcrypt.hash(password, 10);
