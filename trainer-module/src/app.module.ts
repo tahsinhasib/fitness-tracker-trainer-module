@@ -9,9 +9,11 @@ import { User } from './user/user.entity';
 import { Trainer } from './trainer/trainer.entity';
 import { WorkoutPlanModule } from './workout-plan/workout-plan.module';
 import { WorkoutPlan } from './workout-plan/workout-plan.entity';
+import { ClientMetricsModule } from './client-metrics/client-metrics.module';
+import { ClientMetric } from './client-metrics/client-metrics.entity';
 
 @Module({
-    imports: [AuthModule, UserModule, TrainerModule, WorkoutPlanModule, TypeOrmModule.forRoot({
+    imports: [AuthModule, UserModule, TrainerModule, WorkoutPlanModule, ClientMetricsModule, TypeOrmModule.forRoot({
     type: 'postgres',
     host: 'localhost',
     port: 5432,
@@ -19,7 +21,7 @@ import { WorkoutPlan } from './workout-plan/workout-plan.entity';
     password: 'root',
     database: 'fitnesstrackerDB',
     entities: [
-        User, Trainer, WorkoutPlan,
+        User, Trainer, WorkoutPlan, ClientMetric
     ],
         synchronize: true,
     }),],

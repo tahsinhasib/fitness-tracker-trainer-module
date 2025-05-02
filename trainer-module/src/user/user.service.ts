@@ -28,7 +28,7 @@ export class UserService {
       }
       
 
-      async requestTrainer(userId: number, trainerId: number) {
+    async requestTrainer(userId: number, trainerId: number) {
         const trainerUser = await this.userRepository.findOne({ where: { id: trainerId } });
       
         if (!trainerUser) {
@@ -66,6 +66,5 @@ export class UserService {
         await this.trainerRepository.save(trainer);
       
         return { message: 'Request sent successfully', trainer };
-      }
-      
+    }
 }
