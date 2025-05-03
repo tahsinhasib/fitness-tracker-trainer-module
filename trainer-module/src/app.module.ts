@@ -11,20 +11,35 @@ import { WorkoutPlanModule } from './workout-plan/workout-plan.module';
 import { WorkoutPlan } from './workout-plan/workout-plan.entity';
 import { ClientMetricsModule } from './client-metrics/client-metrics.module';
 import { ClientMetric } from './client-metrics/client-metrics.entity';
+import { AttendanceModule } from './attendance/attendance.module';
+import { Attendance } from './attendance/attendance.entity';
 
 @Module({
-    imports: [AuthModule, UserModule, TrainerModule, WorkoutPlanModule, ClientMetricsModule, TypeOrmModule.forRoot({
-    type: 'postgres',
-    host: 'localhost',
-    port: 5432,
-    username: 'postgres',
-    password: 'root',
-    database: 'fitnesstrackerDB',
-    entities: [
-        User, Trainer, WorkoutPlan, ClientMetric
+    imports: [
+        AuthModule, 
+        UserModule, 
+        TrainerModule, 
+        WorkoutPlanModule, 
+        ClientMetricsModule, 
+        AttendanceModule, 
+
+        TypeOrmModule.forRoot({
+            type: 'postgres',
+            host: 'localhost',
+            port: 5432,
+            username: 'postgres',
+            password: 'root',
+            database: 'fitnesstrackerDB',
+            entities: [
+                User, 
+                Trainer, 
+                WorkoutPlan, 
+                ClientMetric,
+                Attendance
+            ],
+                synchronize: true,
+        }),
     ],
-        synchronize: true,
-    }),],
   controllers: [AppController],
   providers: [AppService],
 })
