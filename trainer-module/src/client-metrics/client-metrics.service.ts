@@ -117,48 +117,111 @@ export class ClientMetricsService {
     // Generate pdf report
     async generateReport(userId: number): Promise<string> {
         const metrics = await this.metricRepo.find({
-          where: { user: { id: userId } },
-          relations: ['user'],
-          order: { timestamp: 'DESC' },
+            where: { user: { id: userId } },
+            relations: ['user'],
+            order: { timestamp: 'DESC' },
         });
-      
+    
         if (!metrics || metrics.length === 0) {
-          throw new NotFoundException('No metrics found for this user');
+            throw new NotFoundException('No metrics found for this user');
         }
-      
+    
         const reportsDir = path.join(__dirname, '..', '..', 'reports');
         if (!fs.existsSync(reportsDir)) {
-          fs.mkdirSync(reportsDir);
+            fs.mkdirSync(reportsDir);
         }
-      
+    
         const fileName = `user-${userId}-metrics-report.pdf`;
         const filePath = path.join(reportsDir, fileName);
-      
-        const doc = new PDFDocument();
+    
+        const doc = new PDFDocument({ margin: 50 });
         const stream = fs.createWriteStream(filePath);
         doc.pipe(stream);
-      
-        doc.fontSize(20).text(`Fitness Report for ${metrics[0].user.name}`, { underline: true });
-        doc.moveDown();
-      
+
+
+        const logoPath = path.join(__dirname, '..', 'assets', 'signature_1.png');
+
+        // Header
+        doc
+            .fontSize(22)
+            .fillColor('#1f4e79')
+            .text(`Fitness Analytics Report`, { align: 'center' })
+            .moveDown(0.5);
+    
+        doc
+            .fontSize(16)
+            .fillColor('#000')
+            .text(`Client: ${metrics[0].user.name}`, { align: 'center' })
+            .moveDown(1);
+    
+        // Draw line
+        doc.moveTo(50, doc.y).lineTo(550, doc.y).strokeColor('#aaa').stroke().moveDown();
+    
         metrics.forEach((m, index) => {
-          doc.fontSize(12).text(`Entry #${index + 1}`);
-          doc.text(`Weight: ${m.weight} kg`);
-          doc.text(`Height: ${m.height} cm`);
-          doc.text(`Heart Rate: ${m.heartRate} bpm`);
-          doc.text(`Blood Pressure: ${m.bloodPressure}`);
-          doc.text(`Calories Burned: ${m.caloriesBurned}`);
-          doc.text(`Notes: ${m.notes}`);
-          doc.text(`Date: ${new Date(m.timestamp).toLocaleString()}`);
-          doc.moveDown();
+            doc
+              .fontSize(14)
+              .fillColor('#1f4e79')
+              .text(`Entry #${index + 1}`, {
+                underline: true,
+                align: 'center'
+              })
+              .moveDown(0.5);
+          
+            const pageWidth = doc.page.width;
+            const tableWidth = 400;
+            const tableLeftX = (pageWidth - tableWidth) / 2;
+            const rowHeight = 24;
+            const col1Width = 150;
+            const col2Width = tableWidth - col1Width;
+            const tableTopY = doc.y;
+          
+            const rows = [
+              ['Weight', `${m.weight} kg`],
+              ['Height', `${m.height} cm`],
+              ['Heart Rate', `${m.heartRate} bpm`],
+              ['Blood Pressure', m.bloodPressure],
+              ['Calories Burned', `${m.caloriesBurned}`],
+              ['Notes', m.notes || 'N/A'],
+              ['Date', new Date(m.timestamp).toLocaleString()],
+            ];
+          
+            rows.forEach((row, rowIndex) => {
+              const y = tableTopY + rowIndex * rowHeight;
+          
+              // Draw bordered row
+              doc
+                .rect(tableLeftX, y, tableWidth, rowHeight)
+                .strokeColor('#999')
+                .stroke();
+          
+              // Left column (label)
+              doc
+                .fontSize(12)
+                .fillColor('#000')
+                .text(row[0], tableLeftX, y + 6, {
+                  width: col1Width,
+                  align: 'center'
+                });
+          
+              // Right column (value)
+              doc
+                .fontSize(12)
+                .fillColor('#000')
+                .text(row[1], tableLeftX + col1Width, y + 6, {
+                  width: col2Width,
+                  align: 'center'
+                });
+            });
+          
+            doc.moveDown(1.5);
         });
-      
+          
+    
         doc.end();
-      
-        // Wait for the file stream to finish writing
+    
         return new Promise((resolve, reject) => {
-          stream.on('finish', () => resolve(`Report saved as ${fileName}`));
-          stream.on('error', reject);
+            stream.on('finish', () => resolve(`Report saved as ${fileName}`));
+            stream.on('error', reject);
         });
     }
 }
