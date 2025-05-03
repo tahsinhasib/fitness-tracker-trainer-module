@@ -40,8 +40,8 @@ export class ClientMetricsController {
     // pdf report generation
     @Get('generate-report')
     @Roles(Role.USER)
-    async generateReport(@Req() req, @Res() res: Response) {
-    return this.metricsService.generateReport(req.user.userId, res);
+    async generateReport(@Req() req) {
+    return this.metricsService.generateReport(req.user.userId);
     }
 
 }

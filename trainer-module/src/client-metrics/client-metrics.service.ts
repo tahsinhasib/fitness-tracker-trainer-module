@@ -9,7 +9,7 @@ import * as PDFDocument from 'pdfkit';
 import { Response } from 'express';
 import { Stream } from 'stream';
 import * as fs from 'fs';
-import path from 'path';
+import * as path from 'path';
 
 @Injectable()
 export class ClientMetricsService {
@@ -115,7 +115,7 @@ export class ClientMetricsService {
 
 
     // Generate pdf report
-    async generateReport(userId: number, res: Response) {
+    async generateReport(userId: number): Promise<string> {
         const metrics = await this.metricRepo.find({
           where: { user: { id: userId } },
           relations: ['user'],
@@ -126,10 +126,17 @@ export class ClientMetricsService {
           throw new NotFoundException('No metrics found for this user');
         }
       
+        const reportsDir = path.join(__dirname, '..', '..', 'reports');
+        if (!fs.existsSync(reportsDir)) {
+          fs.mkdirSync(reportsDir);
+        }
+      
+        const fileName = `user-${userId}-metrics-report.pdf`;
+        const filePath = path.join(reportsDir, fileName);
+      
         const doc = new PDFDocument();
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename=user-${userId}-report.pdf`);
-        doc.pipe(res);
+        const stream = fs.createWriteStream(filePath);
+        doc.pipe(stream);
       
         doc.fontSize(20).text(`Fitness Report for ${metrics[0].user.name}`, { underline: true });
         doc.moveDown();
@@ -147,5 +154,11 @@ export class ClientMetricsService {
         });
       
         doc.end();
+      
+        // Wait for the file stream to finish writing
+        return new Promise((resolve, reject) => {
+          stream.on('finish', () => resolve(`Report saved as ${fileName}`));
+          stream.on('error', reject);
+        });
     }
 }
