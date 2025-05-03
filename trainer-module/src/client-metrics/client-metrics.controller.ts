@@ -1,4 +1,5 @@
-import { Controller, Post, Body, UseGuards, Req, Get, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Req, Get, Param, Delete, Res } from '@nestjs/common';
+import { Response } from 'express';                                                                     //pdf
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
@@ -34,6 +35,13 @@ export class ClientMetricsController {
     @Roles(Role.TRAINER)
     async getClientMetrics(@Param('clientId') clientId: number, @Req() req) {
         return this.metricsService.getMetricsForTrainer(req.user.userId, clientId);
+    }
+
+    // pdf report generation
+    @Get('generate-report')
+    @Roles(Role.USER)
+    async generateReport(@Req() req, @Res() res: Response) {
+    return this.metricsService.generateReport(req.user.userId, res);
     }
 
 }

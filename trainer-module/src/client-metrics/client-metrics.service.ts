@@ -5,6 +5,11 @@ import { ClientMetric } from './client-metrics.entity';
 import { CreateClientMetricDto } from './DTO/create-client-metric.dto';
 import { User } from '../user/user.entity';
 import { Trainer } from 'src/trainer/trainer.entity';
+import * as PDFDocument from 'pdfkit';
+import { Response } from 'express';
+import { Stream } from 'stream';
+import * as fs from 'fs';
+import path from 'path';
 
 @Injectable()
 export class ClientMetricsService {
@@ -75,7 +80,6 @@ export class ClientMetricsService {
             order: { timestamp: 'DESC' },
             relations: ['user'],
         });
-    
         return metrics.map(metric => ({
             id: metric.id,
             weight: metric.weight,
@@ -107,5 +111,41 @@ export class ClientMetricsService {
             where: { user: { id: clientId } },
             order: { timestamp: 'DESC' }
         });
+    }
+
+
+    // Generate pdf report
+    async generateReport(userId: number, res: Response) {
+        const metrics = await this.metricRepo.find({
+          where: { user: { id: userId } },
+          relations: ['user'],
+          order: { timestamp: 'DESC' },
+        });
+      
+        if (!metrics || metrics.length === 0) {
+          throw new NotFoundException('No metrics found for this user');
+        }
+      
+        const doc = new PDFDocument();
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename=user-${userId}-report.pdf`);
+        doc.pipe(res);
+      
+        doc.fontSize(20).text(`Fitness Report for ${metrics[0].user.name}`, { underline: true });
+        doc.moveDown();
+      
+        metrics.forEach((m, index) => {
+          doc.fontSize(12).text(`Entry #${index + 1}`);
+          doc.text(`Weight: ${m.weight} kg`);
+          doc.text(`Height: ${m.height} cm`);
+          doc.text(`Heart Rate: ${m.heartRate} bpm`);
+          doc.text(`Blood Pressure: ${m.bloodPressure}`);
+          doc.text(`Calories Burned: ${m.caloriesBurned}`);
+          doc.text(`Notes: ${m.notes}`);
+          doc.text(`Date: ${new Date(m.timestamp).toLocaleString()}`);
+          doc.moveDown();
+        });
+      
+        doc.end();
     }
 }
