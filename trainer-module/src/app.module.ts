@@ -13,6 +13,8 @@ import { ClientMetricsModule } from './client-metrics/client-metrics.module';
 import { ClientMetric } from './client-metrics/client-metrics.entity';
 import { AttendanceModule } from './attendance/attendance.module';
 import { Attendance } from './attendance/attendance.entity';
+import { ChatModule } from './chat/chat.module';
+import { Message } from './chat/message.entity';
 
 @Module({
     imports: [
@@ -22,6 +24,7 @@ import { Attendance } from './attendance/attendance.entity';
         WorkoutPlanModule, 
         ClientMetricsModule, 
         AttendanceModule, 
+        ChatModule,
 
         TypeOrmModule.forRoot({
             type: 'postgres',
@@ -35,7 +38,8 @@ import { Attendance } from './attendance/attendance.entity';
                 Trainer, 
                 WorkoutPlan, 
                 ClientMetric,
-                Attendance
+                Attendance,
+                Message,
             ],
                 synchronize: true,
         }),
