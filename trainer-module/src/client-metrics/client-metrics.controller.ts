@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Req, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Req, Get, Param, Delete } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Roles } from '../auth/roles.decorator';
 import { RolesGuard } from '../auth/roles.guard';
@@ -15,6 +15,13 @@ export class ClientMetricsController {
     @Roles(Role.USER)
     async addMetric(@Req() req, @Body() dto: CreateClientMetricDto) {
         return this.metricsService.addMetric(req.user.userId, dto);
+    }
+
+    // Inside the controller class
+    @Delete('delete')
+    @Roles(Role.USER)
+    async deleteMyMetric(@Req() req) {
+        return this.metricsService.deleteMetricByUserId(req.user.userId);
     }
 
     @Get('display-metrics')
