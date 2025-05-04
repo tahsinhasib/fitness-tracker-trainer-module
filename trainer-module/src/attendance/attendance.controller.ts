@@ -26,4 +26,12 @@ export class AttendanceController {
         return this.attendanceService.getAnalytics(clientId);
     }
 
+    @Get(':clientId/excel-report')
+    @Roles(Role.TRAINER)
+    downloadExcelReport(@Param('clientId') clientId: number) {
+        return this.attendanceService.downloadExcelReport(clientId);
+    }
+
+
+
 }

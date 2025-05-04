@@ -20,41 +20,63 @@ export class ClientMetricsService {
     ) {}
 
     // Add a new metric for a specific user
+    // async addMetric(userId: number, dto: CreateClientMetricDto) {
+    //     const user = await this.userRepo.findOne({ where: { id: userId } });
+    //     if (!user) {
+    //         throw new Error('User not found');
+    //     }
+    
+    //     let existingMetric = await this.metricRepo.findOne({ where: { user: { id: userId } } });
+
+    //     if (existingMetric) {
+    //         // Update existing record
+    //         existingMetric = {
+    //             ...existingMetric,
+    //             ...dto,
+    //             timestamp: new Date(), // optional: update timestamp
+    //         };
+    //         const updated = await this.metricRepo.save(existingMetric);
+    //         return {
+    //             message: 'Metrics data updated successfully!',
+    //             // displaying data is optional, uncomment if needed
+    //             // data: updated,
+    //         };
+    //     } else {
+    //         // Create new record
+    //         const metric = this.metricRepo.create({
+    //             ...dto,
+    //             user,
+    //         });
+    //         const created = await this.metricRepo.save(metric);
+    //         return {
+    //             message: 'Metrics data submitted successfully!',
+    //             // displaying data is optional, uncomment if needed
+    //             // data: created,
+    //         };
+    //     }
+    // }
+
+    // Add a new metric for a specific user
     async addMetric(userId: number, dto: CreateClientMetricDto) {
         const user = await this.userRepo.findOne({ where: { id: userId } });
         if (!user) {
             throw new Error('User not found');
         }
-    
-        let existingMetric = await this.metricRepo.findOne({ where: { user: { id: userId } } });
 
-        if (existingMetric) {
-            // Update existing record
-            existingMetric = {
-                ...existingMetric,
-                ...dto,
-                timestamp: new Date(), // optional: update timestamp
-            };
-            const updated = await this.metricRepo.save(existingMetric);
-            return {
-                message: 'Metrics data updated successfully!',
-                // displaying data is optional, uncomment if needed
-                // data: updated,
-            };
-        } else {
-            // Create new record
-            const metric = this.metricRepo.create({
-                ...dto,
-                user,
-            });
-            const created = await this.metricRepo.save(metric);
-            return {
-                message: 'Metrics data submitted successfully!',
-                // displaying data is optional, uncomment if needed
-                // data: created,
-            };
-        }
+        // Always create a new metric entry
+        const metric = this.metricRepo.create({
+            ...dto,
+            user,
+            timestamp: new Date(), // optional, override if not set in dto
+        });
+
+        const created = await this.metricRepo.save(metric);
+        return {
+            message: 'Metrics data submitted successfully!',
+            // data: created, // Uncomment if you want to return the newly created record
+        };
     }
+
 
     async deleteMetricByUserId(userId: number) {
         const metric = await this.metricRepo.findOne({
@@ -95,6 +117,28 @@ export class ClientMetricsService {
             }
         }));
     }
+
+
+    private analyzeClientMetrics(metrics: ClientMetric[]): string[] {
+        const suggestions: string[] = [];
+        const latest = metrics[0];
+        const previous = metrics[1];
+    
+        if (latest.heartRate > 100) suggestions.push('High resting heart rate. Consider medical consultation.');
+        if (latest.bloodPressure && latest.bloodPressure.startsWith('140')) suggestions.push('Elevated blood pressure. Monitor regularly.');
+        if (previous && latest.weight < previous.weight - 2)
+            suggestions.push('Sudden weight loss detected. Ensure proper nutrition.');
+        if (metrics.length < 3) suggestions.push('Not enough data for full trend analysis. Please input more data regularly.');
+        if (metrics.length >= 5) {
+            const last5 = metrics.slice(0, 5);
+            const avgCalories = last5.reduce((sum, m) => sum + m.caloriesBurned, 0) / 5;
+            if (avgCalories < 300)
+                suggestions.push('Low average calories burned in last 5 sessions. Try increasing workout intensity.');
+        }
+    
+        return suggestions;
+    }
+
     
     // Get all metrics for a specific client assigned to a trainer
     async getMetricsForTrainer(trainerUserId: number, clientId: number) {
@@ -119,7 +163,7 @@ export class ClientMetricsService {
         const metrics = await this.metricRepo.find({
             where: { user: { id: userId } },
             relations: ['user'],
-            order: { timestamp: 'DESC' },
+            order: { timestamp: 'ASC' },
         });
     
         if (!metrics || metrics.length === 0) {
@@ -139,8 +183,6 @@ export class ClientMetricsService {
         doc.pipe(stream);
 
 
-        const logoPath = path.join(__dirname, '..', 'assets', 'signature_1.png');
-
         // Header
         doc
             .fontSize(22)
@@ -149,7 +191,7 @@ export class ClientMetricsService {
             .moveDown(0.5);
     
         doc
-            .fontSize(16)
+            .fontSize(14)
             .fillColor('#000')
             .text(`Client: ${metrics[0].user.name}`, { align: 'center' })
             .moveDown(1);
@@ -159,12 +201,12 @@ export class ClientMetricsService {
     
         metrics.forEach((m, index) => {
             doc
-              .fontSize(14)
+              .fontSize(12)
               .fillColor('#1f4e79')
               .text(`Entry #${index + 1}`, {
-                underline: true,
-                align: 'center'
-              })
+                    underline: true,
+                    align: 'center'
+                })
               .moveDown(0.5);
           
             const pageWidth = doc.page.width;
@@ -208,13 +250,36 @@ export class ClientMetricsService {
                 .fontSize(12)
                 .fillColor('#000')
                 .text(row[1], tableLeftX + col1Width, y + 6, {
-                  width: col2Width,
-                  align: 'center'
+                    width: col2Width,
+                    align: 'center'
                 });
             });
           
             doc.moveDown(1.5);
         });
+
+
+        // ---- Smart Insights Feedback ----
+        const insights = this.analyzeClientMetrics(metrics);
+        if (insights.length) {
+            doc.addPage();
+
+            doc.fontSize(18)
+                .fillColor('#e63946')
+                .text('Health Insights & Suggestions', { align: 'center', underline: true })
+                .moveDown(1);
+
+            insights.forEach((suggestion, i) => {
+                doc.fontSize(12)
+                    .fillColor('#000')
+                    .text(`• ${suggestion}`, {
+                        width: 500,
+                        align: 'left',
+                        indent: 20,
+                    })
+                    .moveDown(0.5);
+            });
+        }
           
     
         doc.end();
@@ -225,3 +290,5 @@ export class ClientMetricsService {
         });
     }
 }
+
+
