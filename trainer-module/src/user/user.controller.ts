@@ -11,9 +11,12 @@ import { UpdateUserProfileDto } from './DTO/update-user-profile.dto';
 @Controller('user')
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class UserController {
-    constructor(private readonly usersService: UserService, 
-        private readonly trainerService: TrainerService) {}
+    constructor(
+        private readonly usersService: UserService, 
+        private readonly trainerService: TrainerService
+    ) {}
     
+
     @Post('request-trainer')
     @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
     @Roles(Role.USER)
@@ -23,10 +26,8 @@ export class UserController {
 
 
     @Patch('update-profile/:id')
-    async updateProfile(
-        @Param('id', ParseIntPipe) id: number,
-        @Body() dto: UpdateUserProfileDto,
-    ) {
+    @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+    async updateProfile(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateUserProfileDto) {
         return this.usersService.updateProfile(id, dto);
     }
 }
