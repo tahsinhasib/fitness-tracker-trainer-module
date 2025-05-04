@@ -1,14 +1,19 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { UserService } from 'src/user/user.service';
-import { Role } from '../user/user.entity';
+import { Role, User } from '../user/user.entity';
+import { randomBytes } from 'crypto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthService {
     constructor(
         private userService: UserService,
-        private jwtService: JwtService
+        private jwtService: JwtService,
+        @InjectRepository(User) private userRepository: Repository<User>
+
     ) {}
 
     // Signup method
@@ -46,5 +51,35 @@ export class AuthService {
             message: 'Login successful!',
             access_token: this.jwtService.sign({ id: user.id, role: user.role }),
         };
+    }
+
+
+    async requestPasswordReset(email: string) {
+        const user = await this.userRepository.findOne({ where: { email } });
+        if (!user) throw new NotFoundException('User not found');
+      
+        user.resetToken = randomBytes(32).toString('hex');
+        user.resetTokenExpiry = new Date(Date.now() + 3600_000); // 1 hour
+        await this.userRepository.save(user);
+      
+        // TODO: Use MailerService to send real email
+        const resetLink = `https://your-frontend.com/reset-password?token=${user.resetToken}`;
+        console.log(`Reset link: ${resetLink}`);
+        return { message: 'Password reset link sent to your email (console for demo).' };
+    }
+      
+    async resetPassword(token: string, newPassword: string) {
+        const user = await this.userRepository.findOne({ where: { resetToken: token } });
+      
+        if (!user || !user.resetTokenExpiry || user.resetTokenExpiry < new Date()) {
+            throw new BadRequestException('Invalid or expired reset token');
+        }
+      
+        user.password = await bcrypt.hash(newPassword, 10);
+        user.resetToken = undefined;
+        user.resetTokenExpiry = undefined;
+      
+        await this.userRepository.save(user);
+        return { message: 'Password updated successfully' };
     }
 }

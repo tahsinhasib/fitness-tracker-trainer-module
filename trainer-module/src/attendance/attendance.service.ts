@@ -92,7 +92,8 @@ export class AttendanceService {
 
 
     async downloadExcelReport(clientId: number): Promise<StreamableFile> {
-        const filePath = await this.generateExcelReport(clientId); // Generate the report
+        // Generate the report
+        const filePath = await this.generateExcelReport(clientId); 
     
         const fileStream = fs.createReadStream(filePath);
         const fileName = path.basename(filePath);
