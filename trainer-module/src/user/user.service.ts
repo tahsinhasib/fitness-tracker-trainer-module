@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { Trainer } from 'src/trainer/trainer.entity';
+import { UpdateUserProfileDto } from './DTO/update-user-profile.dto';
 
 @Injectable()
 export class UserService {
@@ -69,4 +70,37 @@ export class UserService {
       
         return { message: 'Request sent successfully', trainer };
     }
+
+
+
+    
+
+    async updateProfile(id: number, dto: UpdateUserProfileDto) {
+        const user = await this.userRepository.findOne({ where: { id } });
+        if (!user) throw new NotFoundException('User not found');
+    
+        // assigns even if null is
+        //Object.assign(user, dto);
+
+        for (const key in dto) {
+          const value = dto[key];
+          if (value !== null && value !== undefined) {
+            user[key] = value;
+          }
+        }
+    
+        // displays pass which is not needed
+        // return this.userRepository.save(user);
+
+        const updatedUser = await this.userRepository.save(user);
+
+        // Exclude password
+        const { password, ...userWithoutPassword } = updatedUser;
+
+        return {
+            message: 'Profile updated',
+            user: userWithoutPassword,
+        };
+      }
+    
 }
