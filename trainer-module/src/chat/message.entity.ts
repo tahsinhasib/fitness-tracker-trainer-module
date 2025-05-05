@@ -3,21 +3,21 @@ import { User } from '../user/user.entity';
 
 @Entity()
 export class Message {
-  @PrimaryGeneratedColumn()
-  id: number;
+    @PrimaryGeneratedColumn()
+    id: number;
 
-  @ManyToOne(() => User)
-  sender: User;
+    @ManyToOne(() => User)
+    sender: User;
 
-  @ManyToOne(() => User)
-  receiver: User;
+    @ManyToOne(() => User)
+    receiver: User;
 
-  @Column()
-  content: string;
+    @Column()
+    content: string;
 
-  @CreateDateColumn()
-  timestamp: Date;
+    @CreateDateColumn()
+    timestamp: Date;
 
-  @Column({ default: false })
-  isReminder: boolean;
+    @Column({ default: false })
+    isReminder: boolean;
 }

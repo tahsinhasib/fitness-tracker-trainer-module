@@ -16,6 +16,7 @@ export class AttendanceService {
         @InjectRepository(User) private userRepo: Repository<User>
     ) {}
 
+    // Mark attendance for a client
     async markAttendance(clientId: number, dto: MarkAttendanceDto) {
         const client = await this.userRepo.findOne({ where: { id: clientId } });
         if (!client) throw new NotFoundException('Client not found');
@@ -43,10 +44,10 @@ export class AttendanceService {
           : '0.00';
       
         return {
-          totalSessions,
-          attendedSessions,
-          missedSessions,
-          attendancePercentage: `${attendancePercentage}%`,
+            totalSessions,
+            attendedSessions,
+            missedSessions,
+            attendancePercentage: `${attendancePercentage}%`,
         };
     }
 
@@ -92,7 +93,7 @@ export class AttendanceService {
 
 
     async downloadExcelReport(clientId: number): Promise<StreamableFile> {
-        // Generate the report
+        // Generate the report first
         const filePath = await this.generateExcelReport(clientId); 
     
         const fileStream = fs.createReadStream(filePath);

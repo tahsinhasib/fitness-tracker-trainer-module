@@ -6,8 +6,10 @@ import { Attendance } from './attendance.entity';
 import { User } from 'src/user/user.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Attendance, User])],
-  controllers: [AttendanceController],
-  providers: [AttendanceService]
+    imports: [
+        TypeOrmModule.forFeature([Attendance, User])
+    ],
+    controllers: [AttendanceController],
+    providers: [AttendanceService]
 })
 export class AttendanceModule {}

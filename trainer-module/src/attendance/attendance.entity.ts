@@ -3,18 +3,19 @@ import { User } from '../user/user.entity';
 
 @Entity()
 export class Attendance {
-  @PrimaryGeneratedColumn()
-  id: number;
+    
+    @PrimaryGeneratedColumn()
+    id: number;
 
-  @ManyToOne(() => User)
-  client: User;
+    @ManyToOne(() => User)
+    client: User;
 
-  @Column()
-  sessionDate: Date;
+    @Column()
+    sessionDate: Date;
 
-  @Column({ default: true })
-  attended: boolean;
+    @Column({ default: true })
+    attended: boolean;
 
-  @CreateDateColumn()
-  markedAt: Date;
+    @CreateDateColumn()
+    markedAt: Date;
 }

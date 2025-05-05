@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Req, UseGuards, Param } from '@nestjs/common';
+import { Controller, Post, Get, Body, Req, UseGuards, Param, ValidationPipe, UsePipes } from '@nestjs/common';
 import { WorkoutPlanService } from './workout-plan.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -12,6 +12,7 @@ export class WorkoutPlanController {
     constructor(private readonly workoutPlanService: WorkoutPlanService) {}
 
     @Post('create')
+    @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
     @Roles(Role.TRAINER)
     create(@Req() req, @Body() dto: CreateWorkoutPlanDto) {
         return this.workoutPlanService.createWorkoutPlan(req.user.userId, dto);

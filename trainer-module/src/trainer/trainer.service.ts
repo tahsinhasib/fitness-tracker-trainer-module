@@ -11,14 +11,6 @@ export class TrainerService {
         @InjectRepository(User) private userRepository: Repository<User>
     ){}
     
-
-    // for creating a trainer specialization
-    async createTrainer(user: any, specialization: string) {
-        const trainer = this.trainerRepository.create({specialization, user: { id: user.userId }});
-        return await this.trainerRepository.save(trainer);
-    }
-    
-    
     async findAll() {
         return await this.trainerRepository.find({ relations: ['user'] });
     }
@@ -86,9 +78,8 @@ export class TrainerService {
     }
     
   
-    // Approve client
-    // Approve client
-    
+    // Approve client request
+    // This method will move a client from pendingClients to clients
     async approveClient(trainerUserId: number, clientId: number) {
         const trainer = await this.trainerRepository.findOne({
             where: { user: { id: trainerUserId } },
@@ -101,7 +92,6 @@ export class TrainerService {
         if (!client)
             throw new NotFoundException(`Client with ID ${clientId} is not in the pending list`);
     
-        // Safely initialize the clients array
         trainer.clients = trainer.clients ?? [];
         trainer.clients.push(client);
     
@@ -126,7 +116,8 @@ export class TrainerService {
     
 
   
-    // Get approved clients
+    // Get approved clients for a trainer
+    // This method will return the list of clients for a trainer
     async getClients(trainerUserId: number) {
         const trainer = await this.trainerRepository.findOne({
             where: { user: { id: trainerUserId } },
@@ -143,7 +134,8 @@ export class TrainerService {
         }));
     }
 
-
+    // Remove a client from the trainer's list
+    // This method will remove a client from the trainer's clients list
     async removeClient(trainerUserId: number, clientId: number) {
         const trainer = await this.trainerRepository.findOne({
             where: { user: { id: trainerUserId } },

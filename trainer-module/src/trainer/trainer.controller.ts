@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Req, UseGuards, Param, Patch } from '@nestjs/common';
+import { Controller, Post, Get, Body, Req, UseGuards, Param, Patch, UsePipes } from '@nestjs/common';
 import { TrainerService } from './trainer.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
@@ -12,13 +12,6 @@ import { AddClientDto } from './DTO/add-client.dto';
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class TrainerController {
     constructor(private trainerService: TrainerService) {}
-
-    // for creating a trainer specialization
-    @Post('create')
-    @Roles(Role.TRAINER)
-    createTrainer(@Req() req, @Body() body: { specialization: string }) {
-        return this.trainerService.createTrainer(req.user, body.specialization);
-    }
 
     // for getting all trainers
     @Get()

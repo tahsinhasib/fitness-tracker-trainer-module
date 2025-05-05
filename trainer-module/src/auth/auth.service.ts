@@ -18,7 +18,9 @@ export class AuthService {
 
     // Signup method
     async signup(name: string, email: string, password: string, role: string) {
+
         const existingUser = await this.userService.findByEmail(email);
+        
         if (existingUser) {
             throw new UnauthorizedException('Email already in use');
         }
@@ -30,8 +32,6 @@ export class AuthService {
             password: hashedPassword,
             role: role as Role,
         });
-    
-        // Return a message instead of JWT
         return {
             message: 'Signup successful. Please log in.'
         };
@@ -54,6 +54,7 @@ export class AuthService {
     }
 
 
+    // Request password reset method
     async requestPasswordReset(email: string) {
         const user = await this.userRepository.findOne({ where: { email } });
         if (!user) throw new NotFoundException('User not found');
@@ -65,9 +66,12 @@ export class AuthService {
         // TODO: Use MailerService to send real email
         const resetLink = `https://your-frontend.com/reset-password?token=${user.resetToken}`;
         console.log(`Reset link: ${resetLink}`);
-        return { message: 'Password reset link sent to your email (console for demo).' };
+        return { 
+            message: 'Password reset link sent to your email (console for demo).' 
+        };
     }
       
+    // Reset password method
     async resetPassword(token: string, newPassword: string) {
         const user = await this.userRepository.findOne({ where: { resetToken: token } });
       
@@ -80,6 +84,8 @@ export class AuthService {
         user.resetTokenExpiry = undefined;
       
         await this.userRepository.save(user);
-        return { message: 'Password updated successfully' };
+        return { 
+            message: 'Password updated successfully' 
+        };
     }
 }

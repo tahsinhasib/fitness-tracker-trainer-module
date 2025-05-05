@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { AttendanceService } from './attendance.service';
@@ -16,6 +16,7 @@ export class AttendanceController {
 
     @Post(':clientId')
     @Roles(Role.TRAINER)
+    @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
     mark(@Param('clientId') clientId: number, @Body() dto: MarkAttendanceDto) {
         return this.attendanceService.markAttendance(clientId, dto);
     }
