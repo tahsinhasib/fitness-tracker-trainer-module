@@ -32,7 +32,7 @@ import { Message } from './chat/message.entity';
             port: 5432,
             username: 'postgres',
             password: 'root',
-            database: 'fitnesstrackerDB',
+            database: 'FitnessTrackerdb',
             entities: [
                 User, 
                 Trainer, 
