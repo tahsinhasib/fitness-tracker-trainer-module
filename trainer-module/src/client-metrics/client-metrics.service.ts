@@ -289,6 +289,99 @@ export class ClientMetricsService {
             stream.on('error', reject);
         });
     }
+
+
+    async generateGraphHtmlReport(userId: number): Promise<string> {
+    const metrics = await this.metricRepo.find({
+        where: { user: { id: userId } },
+        relations: ['user'],
+        order: { timestamp: 'ASC' },
+    });
+
+    if (!metrics.length) {
+        throw new NotFoundException('No metrics found for this user');
+    }
+
+    const fileName = `user-${userId}-graph-report.html`;
+    const filePath = path.join(__dirname, '..', '..', 'reports', fileName);
+
+    const labels = metrics.map(m => new Date(m.timestamp).toLocaleDateString());
+    const weights = metrics.map(m => m.weight);
+    const heartRates = metrics.map(m => m.heartRate);
+    const calories = metrics.map(m => m.caloriesBurned);
+
+    const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Client Metrics Graph Report</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <style>
+            body { font-family: Arial, sans-serif; padding: 40px; }
+            canvas { margin-bottom: 40px; }
+            h2 { color: #1f4e79; }
+        </style>
+    </head>
+    <body>
+        <h2>Fitness Metrics Report for ${metrics[0].user.name}</h2>
+
+        <canvas id="weightChart" width="600" height="200"></canvas>
+        <canvas id="heartRateChart" width="600" height="200"></canvas>
+        <canvas id="caloriesChart" width="600" height="200"></canvas>
+
+        <script>
+            const labels = ${JSON.stringify(labels)};
+
+            new Chart(document.getElementById('weightChart'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Weight (kg)',
+                        data: ${JSON.stringify(weights)},
+                        borderColor: '#36a2eb',
+                        fill: false,
+                        tension: 0.3
+                    }]
+                }
+            });
+
+            new Chart(document.getElementById('heartRateChart'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Heart Rate (bpm)',
+                        data: ${JSON.stringify(heartRates)},
+                        borderColor: '#ff6384',
+                        fill: false,
+                        tension: 0.3
+                    }]
+                }
+            });
+
+            new Chart(document.getElementById('caloriesChart'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Calories Burned',
+                        data: ${JSON.stringify(calories)},
+                        borderColor: '#4bc0c0',
+                        fill: false,
+                        tension: 0.3
+                    }]
+                }
+            });
+        </script>
+    </body>
+    </html>
+    `;
+
+        fs.writeFileSync(filePath, htmlContent);
+        return `Graph HTML report saved as ${fileName}`;
+    }
+
 }
 
 

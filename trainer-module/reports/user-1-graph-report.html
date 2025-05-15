@@ -1,0 +1,67 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Client Metrics Graph Report</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <style>
+            body { font-family: Arial, sans-serif; padding: 40px; }
+            canvas { margin-bottom: 40px; }
+            h2 { color: #1f4e79; }
+        </style>
+    </head>
+    <body>
+        <h2>Fitness Metrics Report for Tahsin User</h2>
+
+        <canvas id="weightChart" width="600" height="200"></canvas>
+        <canvas id="heartRateChart" width="600" height="200"></canvas>
+        <canvas id="caloriesChart" width="600" height="200"></canvas>
+
+        <script>
+            const labels = ["5/15/2025","5/15/2025","5/15/2025","5/15/2025"];
+
+            new Chart(document.getElementById('weightChart'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Weight (kg)',
+                        data: [45,48,54,64],
+                        borderColor: '#36a2eb',
+                        fill: false,
+                        tension: 0.3
+                    }]
+                }
+            });
+
+            new Chart(document.getElementById('heartRateChart'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Heart Rate (bpm)',
+                        data: [100,100,120,110],
+                        borderColor: '#ff6384',
+                        fill: false,
+                        tension: 0.3
+                    }]
+                }
+            });
+
+            new Chart(document.getElementById('caloriesChart'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Calories Burned',
+                        data: [500,500,500,100],
+                        borderColor: '#4bc0c0',
+                        fill: false,
+                        tension: 0.3
+                    }]
+                }
+            });
+        </script>
+    </body>
+    </html>
+    

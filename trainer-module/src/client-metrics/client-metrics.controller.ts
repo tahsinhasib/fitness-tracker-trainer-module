@@ -48,4 +48,12 @@ export class ClientMetricsController {
     return this.metricsService.generateReport(req.user.userId);
     }
 
+    //Generate Chart
+    @Get('generate-graph-report')
+    @Roles(Role.USER)
+    async generateGraphReport(@Req() req) {
+        return this.metricsService.generateGraphHtmlReport(req.user.userId);
+    }
+
+
 }
