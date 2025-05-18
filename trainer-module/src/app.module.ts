@@ -15,6 +15,7 @@ import { AttendanceModule } from './attendance/attendance.module';
 import { Attendance } from './attendance/attendance.entity';
 import { ChatModule } from './chat/chat.module';
 import { Message } from './chat/message.entity';
+import { CalendarModule } from './calendar/calendar.module';
 
 @Module({
     imports: [
@@ -25,6 +26,7 @@ import { Message } from './chat/message.entity';
         ClientMetricsModule, 
         AttendanceModule, 
         ChatModule,
+        CalendarModule,
 
         TypeOrmModule.forRoot({
             type: 'postgres',
@@ -43,6 +45,8 @@ import { Message } from './chat/message.entity';
             ],
                 synchronize: true,
         }),
+
+        CalendarModule,
     ],
   controllers: [AppController],
   providers: [AppService],

@@ -10,5 +10,6 @@ import { User } from '../user/user.entity';
     imports: [TypeOrmModule.forFeature([WorkoutPlan, Trainer, User])],
     providers: [WorkoutPlanService],
     controllers: [WorkoutPlanController],
+     exports: [WorkoutPlanService],
 })
 export class WorkoutPlanModule {}

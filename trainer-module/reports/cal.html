@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Workout Plan Calendar</title>
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 2rem;
+        }
+
+        #calendar {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Workout Plan Calendar (Client ID: 1)</h1>
+    <div id="calendar"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const calendarEl = document.getElementById('calendar');
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+              initialView: 'dayGridMonth',
+              headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+              },
+              events: [{"title":"Full Body Transformation","start":"2025-05-04T18:00:00.000Z","end":"2025-06-14T18:00:00.000Z","extendedProps":{"description":"6-week full body strength and conditioning plan","routine":"{\"monday\": \"upper body\", \"tuesday\": \"cardio\", \"wednesday\": \"lower body\"}"}},{"title":"Full Body Transformation","start":"2025-06-29T18:00:00.000Z","end":"2025-06-14T18:00:00.000Z","extendedProps":{"description":"6-week full body strength and conditioning plan","routine":"{\"monday\": \"upper body\", \"tuesday\": \"cardio\", \"wednesday\": \"lower body\"}"}},{"title":"Full Body Transformation","start":"2025-05-19T18:00:00.000Z","end":"2025-05-21T18:00:00.000Z","extendedProps":{"description":"6-week full body strength and conditioning plan","routine":"{\"monday\": \"upper body\", \"tuesday\": \"cardio\", \"wednesday\": \"lower body\"}"}},{"title":"Full Body Transformation","start":"2025-05-19T18:00:00.000Z","end":"2025-05-21T18:00:00.000Z","extendedProps":{"description":"6-week full body strength and conditioning plan","routine":"{\"monday\": \"upper body\", \"tuesday\": \"cardio\", \"wednesday\": \"lower body\"}"}},{"title":"Full Body Transformation","start":"2025-05-20T18:00:00.000Z","end":"2025-05-21T18:00:00.000Z","extendedProps":{"description":"6-week full body strength and conditioning plan","routine":"{\"monday\": \"upper body\", \"tuesday\": \"cardio\", \"wednesday\": \"lower body\"}"}},{"title":"Full Body Transformation","start":"2025-05-17T18:00:00.000Z","end":"2025-05-17T18:00:00.000Z","extendedProps":{"description":"6-week full body strength and conditioning plan","routine":"{\"monday\": \"upper body\", \"tuesday\": \"cardio\", \"wednesday\": \"lower body\"}"}},{"title":"Full Body Transformation","start":"2025-05-17T18:00:00.000Z","end":"2025-05-17T18:00:00.000Z","extendedProps":{"description":"6-week full body strength and conditioning plan","routine":"{\"monday\": \"upper body\", \"tuesday\": \"cardio\", \"wednesday\": \"lower body\"}"}},{"title":"Full Body Transformation","start":"2025-05-17T18:00:00.000Z","end":"2025-05-17T18:00:00.000Z","extendedProps":{"description":"6-week full body strength and conditioning plan","routine":"{\"monday\": \"upper body\", \"tuesday\": \"cardio\", \"wednesday\": \"lower body\"}"}},{"title":"Full Body Transformation","start":"2025-05-17T18:00:00.000Z","end":"2025-05-17T18:00:00.000Z","extendedProps":{"description":"6-week full body strength and conditioning plan","routine":"{\"monday\": \"upper body\", \"tuesday\": \"cardio\", \"wednesday\": \"lower body\"}"}},{"title":"Full Body Transformation","start":"2025-05-17T18:00:00.000Z","end":"2025-05-17T18:00:00.000Z","extendedProps":{"description":"6-week full body strength and conditioning plan","routine":"{\"monday\": \"upper body\", \"tuesday\": \"cardio\", \"wednesday\": \"lower body\"}"}},{"title":"Full Body Transformation","start":"2025-05-17T18:00:00.000Z","end":"2025-05-17T18:00:00.000Z","extendedProps":{"description":"6-week full body strength and conditioning plan","routine":"{\"monday\": \"upper body\", \"tuesday\": \"cardio\", \"wednesday\": \"lower body\"}"}},{"title":"Full Body Transformation","start":"2025-05-17T18:00:00.000Z","end":"2025-05-17T18:00:00.000Z","extendedProps":{"description":"6-week full body strength and conditioning plan","routine":"{\"monday\": \"upper body\", \"tuesday\": \"cardio\", \"wednesday\": \"lower body\"}"}},{"title":"Full Body Transformation","start":"2025-05-17T18:00:00.000Z","end":"2025-05-17T18:00:00.000Z","extendedProps":{"description":"6-week full body strength and conditioning plan","routine":"{\"monday\": \"upper body\", \"tuesday\": \"cardio\", \"wednesday\": \"lower body\"}"}},{"title":"Full Body Transformation","start":"2025-05-17T18:00:00.000Z","end":"2025-05-17T18:00:00.000Z","extendedProps":{"description":"6-week full body strength and conditioning plan","routine":"{\"monday\": \"upper body\", \"tuesday\": \"cardio\", \"wednesday\": \"lower body\"}"}},{"title":"Full Body Transformation","start":"2025-05-18T18:00:00.000Z","end":"2025-05-18T18:00:00.000Z","extendedProps":{"description":"6-week full body strength and conditioning plan","routine":"{\"monday\": \"upper body\", \"tuesday\": \"cardio\", \"wednesday\": \"lower body\"}"}},{"title":"Full Body Transformation","start":"2025-05-18T18:00:00.000Z","end":"2025-05-18T18:00:00.000Z","extendedProps":{"description":"6-week full body strength and conditioning plan","routine":"{\"monday\": \"upper body\", \"tuesday\": \"cardio\", \"wednesday\": \"lower body\"}"}},{"title":"Full Body Transformation","start":"2025-05-18T18:00:00.000Z","end":"2025-05-18T18:00:00.000Z","extendedProps":{"description":"6-week full body strength and conditioning plan","routine":"{\"monday\": \"upper body\", \"tuesday\": \"cardio\", \"wednesday\": \"lower body\"}"}},{"title":"Full Body Transformation","start":"2025-05-18T18:00:00.000Z","end":"2025-05-18T18:00:00.000Z","extendedProps":{"description":"6-week full body strength and conditioning plan","routine":"{\"monday\": \"upper body\", \"tuesday\": \"cardio\", \"wednesday\": \"lower body\"}"}},{"title":"Full Body Transformation","start":"2025-05-18T18:00:00.000Z","end":"2025-05-18T18:00:00.000Z","extendedProps":{"description":"6-week full body strength and conditioning plan","routine":"{\"monday\": \"upper body\", \"tuesday\": \"cardio\", \"wednesday\": \"lower body\"}"}},{"title":"Full Body Transformation","start":"2025-05-18T18:00:00.000Z","end":"2025-05-18T18:00:00.000Z","extendedProps":{"description":"6-week full body strength and conditioning plan","routine":"{\"monday\": \"upper body\", \"tuesday\": \"cardio\", \"wednesday\": \"lower body\"}"}},{"title":"Full Body Transformation","start":"2025-05-18T18:00:00.000Z","end":"2025-05-18T18:00:00.000Z","extendedProps":{"description":"6-week full body strength and conditioning plan","routine":"{\"monday\": \"upper body\", \"tuesday\": \"cardio\", \"wednesday\": \"lower body\"}"}},{"title":"Full Body Transformation","start":"2025-05-18T18:00:00.000Z","end":"2025-05-18T18:00:00.000Z","extendedProps":{"description":"6-week full body strength and conditioning plan","routine":"{\"monday\": \"upper body\", \"tuesday\": \"cardio\", \"wednesday\": \"lower body\"}"}},{"title":"Full Body Transformation","start":"2025-06-18T18:00:00.000Z","end":"2025-06-19T18:00:00.000Z","extendedProps":{"description":"6-week full body strength and conditioning plan","routine":"{\"monday\": \"upper body\", \"tuesday\": \"cardio\", \"wednesday\": \"lower body\"}"}}],
+              eventClick: function(info) {
+                const { title, extendedProps } = info.event;
+                alert(`📌 ${title}\n\n📝 ${extendedProps.description}\n📅 Routine: ${extendedProps.routine}`);
+              }
+            });
+
+            calendar.render();
+          });
+    </script>
+</body>
+
+</html>
