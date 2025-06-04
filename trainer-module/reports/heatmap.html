@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Attendance Heatmap</title>
+    <style>
+        .heatmap {
+            display: grid;
+            grid-template-columns: repeat(7, 30px);
+            gap: 4px;
+            max-width: 240px;
+            margin: 0 auto;
+        }
+
+        .day {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .attended {
+            background-color: #4caf50;
+        }
+
+        .missed {
+            background-color: #f44336;
+        }
+
+        .no-session {
+            background-color: #e0e0e0;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: #333;
+            color: #fff;
+            padding: 5px;
+            font-size: 12px;
+            display: none;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2 style="text-align:center">Attendance Heatmap</h2>
+    <div class="heatmap" id="heatmap"></div>
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        const attendanceData = [{"date":"2025-05-18","attended":true}];
+
+    const attendanceMap = {};
+    attendanceData.forEach(entry => {
+        attendanceMap[entry.date] = entry.attended;
+    });
+
+    const heatmapEl = document.getElementById('heatmap');
+    const tooltip = document.getElementById('tooltip');
+
+    const startDate = new Date(attendanceData[0]?.date || new Date());
+    const endDate = new Date();
+    endDate.setDate(startDate.getDate() + 29); // Show 30 days
+
+    for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+        const dateStr = d.toISOString().split('T')[0];
+        const status = attendanceMap.hasOwnProperty(dateStr)
+        ? (attendanceMap[dateStr] ? 'attended' : 'missed')
+        : 'no-session';
+
+        const dayDiv = document.createElement('div');
+        dayDiv.className = `day ${status}`;
+        dayDiv.title = `${dateStr} - ${status}`;
+
+        dayDiv.addEventListener('mouseover', e => {
+        tooltip.style.display = 'block';
+        tooltip.textContent = `${dateStr} - ${status}`;
+        tooltip.style.left = `${e.pageX + 10}px`;
+        tooltip.style.top = `${e.pageY - 10}px`;
+        });
+
+        dayDiv.addEventListener('mouseout', () => {
+        tooltip.style.display = 'none';
+        });
+
+        heatmapEl.appendChild(dayDiv);
+    }
+    </script>
+
+</body>
+
+</html>

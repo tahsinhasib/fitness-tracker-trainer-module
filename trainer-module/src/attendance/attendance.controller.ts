@@ -33,6 +33,11 @@ export class AttendanceController {
         return this.attendanceService.downloadExcelReport(clientId);
     }
 
+    @Get(':clientId/heatmap-html')
+    @Roles(Role.TRAINER)
+    async getHeatmapHtml(@Param('clientId') clientId: number): Promise<string> {
+        return this.attendanceService.getHeatmapHtml(clientId);
+    }
 
 
 }

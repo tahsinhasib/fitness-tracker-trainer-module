@@ -7,7 +7,7 @@
         <style>
             body { font-family: Arial, sans-serif; padding: 40px; }
             canvas { margin-bottom: 40px; }
-            h2 { color: hsl(209, 59%, 30%); }
+            h2 { color: #1f4e79; }
         </style>
     </head>
     <body>
@@ -18,7 +18,7 @@
         <canvas id="caloriesChart" width="600" height="200"></canvas>
 
         <script>
-            const labels = ["5/15/2025","5/15/2025","5/15/2025","5/15/2025"];
+            const labels = ["5/15/2025","5/15/2025","5/15/2025","5/15/2025","5/18/2025","5/18/2025","5/18/2025"];
 
             new Chart(document.getElementById('weightChart'), {
                 type: 'line',
@@ -26,7 +26,7 @@
                     labels: labels,
                     datasets: [{
                         label: 'Weight (kg)',
-                        data: [45,48,54,64],
+                        data: [45,48,54,64,50,64,64],
                         borderColor: '#36a2eb',
                         fill: false,
                         tension: 0.3
@@ -40,7 +40,7 @@
                     labels: labels,
                     datasets: [{
                         label: 'Heart Rate (bpm)',
-                        data: [100,100,120,110],
+                        data: [100,100,120,110,110,110,110],
                         borderColor: '#ff6384',
                         fill: false,
                         tension: 0.3
@@ -54,7 +54,7 @@
                     labels: labels,
                     datasets: [{
                         label: 'Calories Burned',
-                        data: [500,500,500,100],
+                        data: [500,500,500,100,100,100,50],
                         borderColor: '#4bc0c0',
                         fill: false,
                         tension: 0.3
